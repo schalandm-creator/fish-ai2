@@ -1,0 +1,50 @@
+{
+  "fischarten": {
+    "Hecht": {
+      "wissenschaftlich": "Esox lucius",
+      "deutsch": "Hecht"
+    },
+    "Zander": {
+      "wissenschaftlich": "Sander lucioperca",
+      "deutsch": "Zander"
+    },
+    "Bachforelle": {
+      "wissenschaftlich": "Salmo trutta fario",
+      "deutsch": "Bachforelle"
+    },
+    "Äsche": {
+      "wissenschaftlich": "Thymallus thymallus",
+      "deutsch": "Äsche"
+    },
+    "Barbe": {
+      "wissenschaftlich": "Barbus barbus",
+      "deutsch": "Barbe"
+    },
+    "Aal": {
+      "wissenschaftlich": "Anguilla anguilla",
+      "deutsch": "Aal"
+    },
+    "Karpfen": {
+      "wissenschaftlich": "Cyprinus carpio",
+      "deutsch": "Karpfen"
+    }
+    // füge hier weitere häufige Arten hinzu (ca. 20–30 reichen für den Anfang)
+  },
+  "bundeslaender": {
+    "Baden-Württemberg": {
+      "Hecht": {"mindestmass": 50, "schonzeit": "15.02. – 15.05."},
+      "Zander": {"mindestmass": 50, "schonzeit": "01.04. – 31.05."},
+      "Bachforelle": {"mindestmass": 26, "schonzeit": "01.10. – 15.03."},
+      "Äsche": {"mindestmass": 30, "schonzeit": "01.01. – 30.04."}
+    },
+    "Bayern": {
+      "Hecht": {"mindestmass": 50, "schonzeit": "15.02. – 30.04."},
+      "Bachforelle": {"mindestmass": 26, "schonzeit": "01.10. – 15.03."},
+      "Äsche": {"mindestmass": 35, "schonzeit": "01.01. – 30.04."}
+    },
+    "Nordrhein-Westfalen": {
+      "Hecht": {"mindestmass": 45, "schonzeit": "01.02. – 15.04."}
+    }
+    // weitere Bundesländer hinzufügen (alle 16)
+  }
+}
