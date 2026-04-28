@@ -1,7 +1,5 @@
-# requirements.txt  (für Streamlit Cloud + CPU-only)
-
 streamlit
+tensorflow==2.15.0
 Pillow
-transformers
-huggingface_hub
-torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+numpy
+h5py
