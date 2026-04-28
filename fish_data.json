@@ -1,50 +1,46 @@
 {
   "fischarten": {
-    "Hecht": {
-      "wissenschaftlich": "Esox lucius",
-      "deutsch": "Hecht"
-    },
-    "Zander": {
-      "wissenschaftlich": "Sander lucioperca",
-      "deutsch": "Zander"
-    },
-    "Bachforelle": {
-      "wissenschaftlich": "Salmo trutta fario",
-      "deutsch": "Bachforelle"
-    },
-    "Äsche": {
-      "wissenschaftlich": "Thymallus thymallus",
-      "deutsch": "Äsche"
-    },
-    "Barbe": {
-      "wissenschaftlich": "Barbus barbus",
-      "deutsch": "Barbe"
-    },
-    "Aal": {
-      "wissenschaftlich": "Anguilla anguilla",
-      "deutsch": "Aal"
-    },
-    "Karpfen": {
-      "wissenschaftlich": "Cyprinus carpio",
-      "deutsch": "Karpfen"
-    }
-    // füge hier weitere häufige Arten hinzu (ca. 20–30 reichen für den Anfang)
+    "Zander": { "wissenschaftlich": "Sander lucioperca" },
+    "Flussbarsch": { "wissenschaftlich": "Perca fluviatilis" },
+    "Hecht": { "wissenschaftlich": "Esox lucius" },
+    "Meerforelle": { "wissenschaftlich": "Salmo trutta trutta" },
+    "Brassen": { "wissenschaftlich": "Abramis brama" },
+    "Karpfen": { "wissenschaftlich": "Cyprinus carpio" },
+    "Aal": { "wissenschaftlich": "Anguilla anguilla" },
+    "Wels": { "wissenschaftlich": "Silurus glanis" },
+    "Scholle": { "wissenschaftlich": "Pleuronectes platessa" },
+    "Rotauge": { "wissenschaftlich": "Rutilus rutilus" }
   },
   "bundeslaender": {
     "Baden-Württemberg": {
-      "Hecht": {"mindestmass": 50, "schonzeit": "15.02. – 15.05."},
-      "Zander": {"mindestmass": 50, "schonzeit": "01.04. – 31.05."},
-      "Bachforelle": {"mindestmass": 26, "schonzeit": "01.10. – 15.03."},
-      "Äsche": {"mindestmass": 30, "schonzeit": "01.01. – 30.04."}
+      "Zander": {"mindestmass": 50, "schonzeit": "01.04. - 31.05."},
+      "Hecht": {"mindestmass": 50, "schonzeit": "15.02. - 15.05."},
+      "Meerforelle": {"mindestmass": 45, "schonzeit": "01.10. - 31.03."},
+      "Brassen": {"mindestmass": 0, "schonzeit": "Keine"},
+      "Karpfen": {"mindestmass": 0, "schonzeit": "Keine"},
+      "Aal": {"mindestmass": 0, "schonzeit": "Keine"},
+      "Wels": {"mindestmass": 0, "schonzeit": "Keine"},
+      "Rotauge": {"mindestmass": 0, "schonzeit": "Keine"}
     },
     "Bayern": {
-      "Hecht": {"mindestmass": 50, "schonzeit": "15.02. – 30.04."},
-      "Bachforelle": {"mindestmass": 26, "schonzeit": "01.10. – 15.03."},
-      "Äsche": {"mindestmass": 35, "schonzeit": "01.01. – 30.04."}
+      "Zander": {"mindestmass": 50, "schonzeit": "01.04. - 31.05."},
+      "Hecht": {"mindestmass": 50, "schonzeit": "15.02. - 30.04."},
+      "Meerforelle": {"mindestmass": 40, "schonzeit": "01.10. - 31.03."},
+      "Brassen": {"mindestmass": 0, "schonzeit": "Keine"},
+      "Karpfen": {"mindestmass": 0, "schonzeit": "Keine"}
     },
     "Nordrhein-Westfalen": {
-      "Hecht": {"mindestmass": 45, "schonzeit": "01.02. – 15.04."}
+      "Zander": {"mindestmass": 45, "schonzeit": "01.03. - 31.05."},
+      "Hecht": {"mindestmass": 45, "schonzeit": "01.02. - 15.04."},
+      "Brassen": {"mindestmass": 0, "schonzeit": "Keine"}
+    },
+    "Niedersachsen": {
+      "Zander": {"mindestmass": 50, "schonzeit": "01.04. - 31.05."},
+      "Hecht": {"mindestmass": 50, "schonzeit": "15.02. - 15.05."}
+    },
+    "Brandenburg": {
+      "Zander": {"mindestmass": 45, "schonzeit": "01.04. - 31.05."},
+      "Hecht": {"mindestmass": 45, "schonzeit": "01.03. - 30.04."}
     }
-    // weitere Bundesländer hinzufügen (alle 16)
   }
 }
