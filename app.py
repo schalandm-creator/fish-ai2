@@ -1,81 +1,92 @@
 import streamlit as st
 from PIL import Image
-import torch
-from transformers import pipeline
+import numpy as np
+import tensorflow as tf
 import json
 
-# ------------------- Konfiguration -------------------
-st.set_page_config(page_title="Fisch-Erkennung DE", page_icon="🐟", layout="centered")
-st.title("🐟 Deutsche Fisch-Erkennungs-App")
-st.markdown("Lade ein Foto hoch → Art erkennen → Bundesland wählen → Schonzeit & Mindestmaß anzeigen")
+st.set_page_config(page_title="🐟 Fisch-Erkennung Deutschland", layout="centered")
 
-# Modell laden (vortrainiertes Fish-Classification-Modell von Hugging Face)
-@st.cache_resource
-def load_model():
-    # Gutes allgemeines Fish-Modell (kann auf Fish-Vista oder ähnlich fine-tuned sein)
-    # Alternative: "google/vit-base-patch16-224" + Fine-Tuning oder ein spezielles Fish-Modell
-    classifier = pipeline("image-classification", 
-                         model="jeemsterri/fish_classification",  # oder ein besseres Modell
-                         device=0 if torch.cuda.is_available() else -1)
-    return classifier
+st.title("🐟 Meine Fisch-Erkennungs-App")
+st.markdown("Lade ein Foto deines Fisches hoch – die KI erkennt die Art")
 
-classifier = load_model()
+# ====================== MODELL LADEN ======================
+@st.cache_resource(show_spinner="Lade dein trainiertes Modell...")
+def load_fish_model():
+    try:
+        model = tf.keras.models.load_model("keras_model.h5")
+        st.success("✅ Modell erfolgreich geladen!")
+        return model
+    except Exception as e:
+        st.error(f"Fehler beim Laden des Modells: {e}")
+        st.stop()
 
-# Daten laden
-with open("fish_data.json", "r", encoding="utf-8") as f:
-    data = json.load(f)
+model = load_fish_model()
 
-# ------------------- Bild hochladen -------------------
+# ====================== DEINE KLASSENNAMEN (genaue Reihenfolge) ======================
+CLASS_NAMES = [
+    "Zander",          # Klasse 1
+    "Flussbarsch",     # Klasse 2
+    "Hecht",           # Klasse 3
+    "Meerforelle",     # Klasse 4  ← korrigiert: Märeforelle = Meerforelle
+    "Brassen",         # Klasse 5
+    "Karpfen",         # Klasse 6
+    "Aal",             # Klasse 7
+    "Wels",            # Klasse 8
+    "Scholle",         # Klasse 9
+    "Rotauge"          # Klasse 10
+]
+
+# ====================== FISH DATA LADEN ======================
+try:
+    with open("fish_data.json", "r", encoding="utf-8") as f:
+        fish_data = json.load(f)
+except FileNotFoundError:
+    st.error("fish_data.json nicht gefunden! Bitte lege die Datei ins gleiche Verzeichnis.")
+    st.stop()
+
+# ====================== BILD HOCHLADEN ======================
 uploaded_file = st.file_uploader("Foto des Fisches hochladen", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Hochgeladenes Bild", use_column_width=True)
 
-    # Vorhersage
-    with st.spinner("Fisch wird erkannt..."):
-        results = classifier(image)
-    
-    # Top-Vorhersage
-    top_pred = results[0]
-    predicted_label = top_pred['label'].replace("_", " ").title()  # z.B. "hecht" -> "Hecht"
-    
-    st.success(f"**Erkannte Art:** {predicted_label} (Wahrscheinlichkeit: {top_pred['score']:.1%})")
+    # Bild vorbereiten (224x224 ist Standard für dein Modell)
+    img_resized = image.resize((224, 224))
+    img_array = np.array(img_resized) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
 
-    # Mapping auf deine bekannten Arten (falls das Modell andere Labels hat)
-    fisch_mapping = {
-        "Hecht": "Hecht",
-        "Northern Pike": "Hecht",
-        "Zander": "Zander",
-        "Walleye": "Zander",
-        "Brown Trout": "Bachforelle",
-        "Bachforelle": "Bachforelle",
-        # weitere Mappings je nach Modell-Output
-    }
-    
-    fisch_name = fisch_mapping.get(predicted_label, predicted_label)
-    
-    if fisch_name not in data["fischarten"]:
-        st.warning(f"Die Art '{fisch_name}' ist noch nicht in der Schonzeiten-Datenbank. Bitte ergänze sie in fish_data.json.")
-    else:
-        # Bundesland auswählen
-        bundesland = st.selectbox("Aus welchem Bundesland kommst du?", 
-                                  options=list(data["bundeslaender"].keys()))
+    with st.spinner("KI analysiert den Fisch..."):
+        predictions = model.predict(img_array, verbose=0)[0]
+
+    top_idx = np.argmax(predictions)
+    confidence = float(predictions[top_idx]) * 100
+    predicted_fish = CLASS_NAMES[top_idx]
+
+    if confidence >= 85.0:
+        st.success(f"**Erkannte Art:** {predicted_fish}  \n**Sicherheit:** {confidence:.1f}%")
         
-        info = data["bundeslaender"][bundesland].get(fisch_name)
+        # Bundesland auswählen
+        bundeslaender_liste = list(fish_data.get("bundeslaender", {}).keys())
+        bundesland = st.selectbox("Aus welchem Bundesland kommst du?", options=bundeslaender_liste)
+        
+        # Infos anzeigen
+        info = fish_data["bundeslaender"][bundesland].get(predicted_fish)
         
         if info:
-            st.subheader("📏 Fangregelung")
             col1, col2 = st.columns(2)
             with col1:
-                st.metric("Mindestmaß", f"{info['mindestmass']} cm" if info['mindestmass'] else "—")
+                st.metric("Mindestmaß", f"{info.get('mindestmass', '—')} cm")
             with col2:
-                st.metric("Schonzeit", info['schonzeit'] if info['schonzeit'] else "Keine")
+                st.metric("Schonzeit", info.get('schonzeit', "Keine"))
             
-            st.info("**Hinweis:** Diese Angaben sind ohne Gewähr. Prüfe immer die aktuelle Fischereiverordnung deines Bundeslandes!")
+            st.info("Hinweis: Diese Angaben sind informativ. Prüfe immer die aktuelle Fischereiverordnung deines Bundeslandes!")
         else:
-            st.info(f"Für **{fisch_name}** gibt es in {bundesland} keine spezifischen Schonzeiten/Mindestmaße in der Datenbank (oder ganzjährig erlaubt).")
+            st.info(f"Für **{predicted_fish}** in **{bundesland}** sind keine Regeln in der Datenbank hinterlegt.")
+            
+    else:
+        st.error(f"❌ Der Fisch konnte **nicht sicher erkannt** werden ({confidence:.1f}%).")
+        st.warning("Bitte lade ein klareres Foto hoch (bessere Beleuchtung, ganzer Fisch von der Seite).")
 
-# ------------------- Footer -------------------
 st.markdown("---")
-st.caption("App basiert auf einem vortrainierten Hugging Face Modell. Daten aus öffentlichen Fischereiverordnungen (Stand 2026). Nicht für rechtliche Zwecke verwenden.")
+st.caption("App basiert auf deinem eigenen trainierten Keras-Modell • Nur zu Informationszwecken")
